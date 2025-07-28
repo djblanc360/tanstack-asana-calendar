@@ -31,6 +31,10 @@ import { getAuth } from '@clerk/tanstack-react-start/server'
 import { createServerFn } from '@tanstack/react-start'
 import { getWebRequest } from '@tanstack/react-start/server'
 
+import { Navbar } from '~/components/navbar'
+import logo from '~/assets/piggybanx-bolt.png'
+import { Button } from '~/components/ui/button'
+import LoginForm from '~/components/auth/login-form'
 
 const fetchClerkAuth = createServerFn({ method: 'GET' }).handler(async () => {
   const auth = await getAuth(getWebRequest())
@@ -116,44 +120,34 @@ function RootComponent() {
   )
 }
 
+function Login() {
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <main className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md p-8 space-y-8">
+          <LoginForm />
+        </div>
+      </main>
+    </div>
+  )
+}
+
 function RootDocument({ children }: { children: React.ReactNode }) {
   const context = useRouteContext({ from: Route.id })
   return (
     <ClerkProvider>
       <ConvexProviderWithClerk client={context.convexClient} useAuth={useAuth}>
-      <html>
+      <html className="dark">
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link
-            to="/"
-            activeProps={{
-              className: 'font-bold',
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{' '}
-          <Link
-            to="/posts"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Posts
-          </Link>
-          <div className="ml-auto">
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal" />
-            </SignedOut>
-          </div>
-        </div>
-        <hr />
+        <SignedIn>
+          <Navbar />
+        </SignedIn>
+        <SignedOut>
+        <Login />
+        </SignedOut>
         {children}
         <ScrollRestoration />
         <TanStackRouterDevtools position="bottom-right" />
